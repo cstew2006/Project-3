@@ -1,6 +1,7 @@
 <?php
 function get_entry() {
     include 'connection.php';
+    //referred to Chizzys project for another exampe for try/catch
     try {
         return $db->query('SELECT date, ID, TITLE, tags FROM entries ORDER BY date DESC');
         

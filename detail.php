@@ -1,9 +1,13 @@
 <?php
 require 'inc/functions.php';
+
 include 'inc/header.php';
+
 $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 $selected=get_entry($id);
 ?>
+
+
 <!DOCTYPE html>
 <html>
 

@@ -3,13 +3,17 @@ function get_entry() {
     include 'connection.php';
     try {
         return $db->query('SELECT date, ID, TITLE, tags FROM entries ORDER BY date DESC');
+        
     } catch (Exception $e) {
+        
         echo "Error: " . $e->getMessage() . "<br>";
         return array();
     }
 }
 function get_entry_list_by_tag($tag) {
+    
     include 'connection.php';
+    
     try {
         return $db->query("SELECT ID, TITLE, date, tags FROM entries WHERE tags LIKE '%$tag%' ORDER BY date DESC");
     } catch (Exception $e) {
@@ -27,9 +31,13 @@ function get_entries($id) {
     } catch (Exception $e) {
         echo "Error: " . $e->getMessage() . "<br>";
         return false;
+        
     }
+    
     return $results->fetch(PDO::FETCH_ASSOC);
+    
 }
+
 function search_entries($search, $searchby) {
     include 'connection.php';
     try {
@@ -41,8 +49,11 @@ function search_entries($search, $searchby) {
     } catch (Exception $e) {
         echo "Error: " . $e->getMessage() . "<br>";
         return array();
+        
     }
+    
 }
+
 function entry_count($search, $searchby) {
     include 'connection.php';
     if ($searchby == 'title') {
@@ -59,6 +70,7 @@ function entry_count($search, $searchby) {
     }
     return $results->fetchColumn();
 }
+
 function add_entry($date, $time, $title, $timeUnits, $learned, $resources, $tag) {
     include 'connection.php';
     $sql = 'INSERT INTO entries (title, date, timespent, timeunits, learned, resources, tags) VALUES (?, ?, ?, ?, ?, ?, ?)';
@@ -76,8 +88,11 @@ function add_entry($date, $time, $title, $timeUnits, $learned, $resources, $tag)
         echo "Error: " . $e->getMessage() . "<br>";
         return false;
     }
+    
     return true;
+    
 }
+
 function edit_entry($title, $date, $time, $timeUnits, $learned, $resources, $tag, $id) {
     include 'connection.php';
     $sql = 'UPDATE entries SET title = ?, date = ?, time_spent = ?, time_units = ?, learned = ?, resources = ?, tags = ? WHERE id = ?';
@@ -96,8 +111,11 @@ function edit_entry($title, $date, $time, $timeUnits, $learned, $resources, $tag
         echo "Error: " . $e->getMessage() . "<br>";
         return false;
     }
+    
     return true;
+    
 }
+
 function delete_entry($id) {
     include 'connection.php';
     $sql = 'DELETE FROM entries WHERE id = ?';
@@ -110,4 +128,5 @@ function delete_entry($id) {
         return false;
     }
     return true;
+    
 }

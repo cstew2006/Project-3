@@ -32,7 +32,7 @@ try{
     echo "Error!: " . $e->getMessage() . "<br />";
     return false;
   }
-return $results->fetch(/*PDO::FETCH_ASSOC*/);
+return $results->fetch();
     }
 
 

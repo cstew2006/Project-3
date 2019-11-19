@@ -7,7 +7,7 @@ $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 
 $item = get_entry($id);
 
-$page = 'Edit Entry';
+$page = 'All Entries';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
     $title = trim(filter_input(INPUT_POST, 'title', FILTER_SANITIZE_STRING));

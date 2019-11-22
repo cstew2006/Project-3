@@ -1,12 +1,8 @@
 <?php
 require 'inc/functions.php';
-
 $date = $learned = $title = $time = $resources = $tag = '';
-
 $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
-
 $item = get_entry($id);
-
 $page = 'All Entries';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
@@ -16,8 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $timeUnits = trim(filter_input(INPUT_POST, 'timeSpentUnits', FILTER_SANITIZE_STRING));
     $learned = trim(filter_input(INPUT_POST, 'whatILearned', FILTER_SANITIZE_STRING));
     $resources = trim(filter_input(INPUT_POST, 'ResourcesToRemember', FILTER_SANITIZE_STRING));
-    $tag = trim(filter_input(INPUT_POST, 'tags', FILTER_SANITIZE_STRING));
-    if (edit_entry($title, $date, $time, $timeUnits, $learned, $resources, $tag, $id)) {
+    if (get_entries($title, $date, $time, $timeUnits, $learned, $resources, $id)) {
         echo 'The entry has been successfully updated.';
         header('refresh: 1; url = detail.php?id=' . $id . '');
     } else {
@@ -25,12 +20,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     
 }
-
 include 'inc/header.php'; ?>
     <section>
       <div class="container">
         <div class="edit-entry">
-          <h2>Edit Entry</h2>
+          <h2>New Entry</h2>
           <form method="post">
             <label for="title">Title</label>
             <input id="title" type="text" name="title" value="<?php echo $item['title']; ?>"><br>
@@ -46,10 +40,8 @@ include 'inc/header.php'; ?>
             <textarea id="what-i-learned" rows="5" name="whatILearned"><?php echo $item['learned']; ?></textarea>
             <label for="resources-to-remember">Resources to Remember (separate with commas)</label>
             <textarea id="resources-to-remember" rows="5" name="ResourcesToRemember"><?php echo $item['resources']; ?></textarea>
-            <label for="tags">Tags (separate with commas)</label>
-            <textarea id="tags" rows="2" name="tags"><?php echo $item['tags']; ?></textarea>
             <input type="hidden" name="id" value="<?php echo $id; ?>">
-            <input type="submit" value="Edit Entry" class="button">
+            <input type="submit" value="Submit Entry" class="button">
             <a href="index.php" class="button button-secondary">Cancel</a>
           </form>
         </div>

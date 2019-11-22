@@ -2,7 +2,7 @@
 function get_entries() {
     include 'connection.php';
     try {
-        return $db->query('SELECT date, ID, TITLE, tags FROM entries ORDER BY date DESC');
+        return $db->query('SELECT date, ID, TITLE FROM entries ORDER BY date DESC');
         
     } catch (Exception $e) {
         

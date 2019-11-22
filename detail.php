@@ -1,13 +1,9 @@
 <?php
 require 'inc/functions.php';
-
 include 'inc/header.php';
-
 $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 $selected=get_entry($id);
 ?>
-
-
 <!DOCTYPE html>
 <html>
 
@@ -23,7 +19,7 @@ $selected=get_entry($id);
                         </div>
                         <div class="entry">
                             <h3>What I Learned:</h3>
-                            <p><?php echo $selected['learned'?></p>
+                            <p><?php echo $selected<'learned'?></p>
                         </div>
                         <div class="entry">
                             <h3>Resources to Remember:</h3>

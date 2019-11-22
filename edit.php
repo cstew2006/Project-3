@@ -1,6 +1,6 @@
 <?php
 require 'inc/functions.php';
-$date = $learned = $title = $time = $resources = $tag = '';
+$date = $learned = $title = $time = $resources = '';
 $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 $item = get_entry($id);
 $page = 'Edit Entry';
@@ -12,8 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $timeUnits = trim(filter_input(INPUT_POST, 'timeSpentUnits', FILTER_SANITIZE_STRING));
     $learned = trim(filter_input(INPUT_POST, 'whatILearned', FILTER_SANITIZE_STRING));
     $resources = trim(filter_input(INPUT_POST, 'ResourcesToRemember', FILTER_SANITIZE_STRING));
-    $tag = trim(filter_input(INPUT_POST, 'tags', FILTER_SANITIZE_STRING));
-    if (edit_entry($title, $date, $time, $timeUnits, $learned, $resources, $tag, $id)) {
+    
+    if (edit_entry($title, $date, $time, $timeUnits, $learned, $resources, $id)) {
         echo 'The entry has been successfully updated.';
         header('refresh: 1; url = detail.php?id=' . $id . '');
     } else {

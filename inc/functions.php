@@ -1,70 +1,109 @@
 <?php
-function get_entries() {
-    include 'connection.php';
+function get_entry(){
+    include ("connection.php");
     try {
-        return $db->query('SELECT date, ID, TITLE FROM entries ORDER BY date DESC');
+        $sql = "SELECT * FROM entries ORDER BY date DESC";
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
+        return $results;
     } catch (Exception $e) {
+        echo "Unable to query DB" . $e->getMessage();
+        die();
+    }
+}
+function create_entry($title, $date, $time_spent, $learned, $resources, $tagId = NULL) {
+    include ("connection.php");
+    
+    
+        $sql = "INSERT INTO entries (title, date, time_spent, learned, resources) VALUES (:title, :date, :time_spent, :learned, :resources)";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':title',$title,PDO::PARAM_STR);
+        $stmt->bindParam(':date',$date);
+        $stmt->bindParam(':time_spent',$time_spent,PDO::PARAM_STR);
+        $stmt->bindParam(':learned',$learned,PDO::PARAM_STR);
+        $stmt->bindParam(':resources',$resources,PDO::PARAM_STR);
+        $stmt->execute();
+        $entryId = $db->lastInsertId();
         
-        echo "Error: " . $e->getMessage() . "<br>";
-        return array();
+            }
+            return false;
+        
+    
+    if (1 == $stmt->rowCount()) {
+        {
+            return true;
+        }
+        return false;
+    }
+        echo "Unable to update DB" . $e->getMessage();
+        die(); 
+    
+
+function update_entry_by_id($id, $title, $date, $time_spent, $learned, $resources){
+    include ("connection.php");
+    
+    try {
+        $sql = "UPDATE entries SET title = :title, date = :date, time_spent = :time_spent, learned = :learned, resources = :resources WHERE id = :id";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':id',$id,PDO::PARAM_INT);
+        $stmt->bindParam(':title',$title,PDO::PARAM_STR);
+        $stmt->bindParam(':date',$date,PDO::PARAM_STR);
+        $stmt->bindParam(':time_spent',$time_spent,PDO::PARAM_STR);
+        $stmt->bindParam(':learned',$learned,PDO::PARAM_STR);
+        $stmt->bindParam(':resources',$resources,PDO::PARAM_STR);
+        $stmt->execute();
+        if($stmt->rowCount() == 1){
+            return true;
+            
+        } else {
+            
+            return false;
+            
+        }
+    } catch (Exception $e) {
+        echo "Unable to query DB" . $e->getMessage();
+        die();
     }
 }
-function get_entry($id){
-    include 'connection.php';
-$sql = 'SELECT id,title,date,time_spent,learned,resources FROM entries WHERE id = ?';
-try{
-    $results = $db->prepare($sql);
-    $results->bindValue(1, $id, PDO::PARAM_INT);
-    $results->execute();
-} catch (Exception $e) {
-    echo "Error!: " . $e->getMessage() . "<br />";
-    return false;
-  }
-  
-return $results->fetch();
-  
-}
-
-function add_entry($title, $date, $time_spent, $learned, $resources, $id = null){
-    include 'connection.php';
-if ($id){
-  $sql = 'UPDATE entries SET title=?, date =?, time_spent=?,learned=?,resources=? WHERE id = ?';
-}else{
-$sql = 'INSERT INTO entries(title, date, time_spent, learned, resources) VALUES(?,?,?,?,?)';
-}
-  
-try{
-    $results = $db->prepare($sql);
-    $results->bindValue(1, $title, PDO::PARAM_STR);
-    $results->bindValue(2, $date, PDO::PARAM_STR);
-    $results->bindValue(3, $time_spent, PDO::PARAM_STR);
-    $results->bindValue(4, $learned, PDO::PARAM_STR);
-    $results->bindValue(5, $resources, PDO::PARAM_STR);
-    if ($id){
-      $results->bindValue(6, $id, PDO::PARAM_INT);
+function get_entry_with_id($id){
+    include ("connection.php");
+    try {
+        $sql = "SELECT * FROM entries WHERE id = :id";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':id',$id,PDO::PARAM_INT);
+        $stmt->execute();
+        $results = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return $results;
+    } catch (Exception $e) {
+        echo "Unable to query DB" . $e->getMessage();
+        die();
     }
-    $results->execute();
-} catch (Exception $e) {
-    echo "Error!: " . $e->getMessage() . "<br />";
-    return false;
 }
-  
-  return true;
-}
-
 function delete_entry($id){
-      include 'connection.php';
-$sql = 'DELETE FROM entries WHERE id = ?';
-  try{
-      $results = $db->prepare($sql);
-      $results->bindValue(1, $id, PDO::PARAM_INT);
-      $results->execute();
-  } catch (Exception $e) {
-      echo "Error!: " . $e->getMessage() . "<br />";
-      return false;
+    include ("connection.php");
+    
+    try {
+        $sql = "DELETE FROM entries WHERE id = :id";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':id',$id,PDO::PARAM_INT);
+        $stmt->execute();
+        
+        if($stmt->rowCount() == 1){
+            return true;
+            
+        } else {
+            
+            return false;
+            
+        }
+    } catch (Exception $e) {
+        echo "Unable to query DB" . $e->getMessage();
+        die();
     }
-  
-return true;
-  
 }
+
+    
+?>

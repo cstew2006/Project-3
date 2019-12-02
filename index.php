@@ -1,50 +1,48 @@
-<?php
-require 'inc/functions.php';
-$date = $learned = $title = $time = $resources = $tag = '';
-$id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
-$item = get_entry($id);
-$page = 'All Entries';
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
-    $title = trim(filter_input(INPUT_POST, 'title', FILTER_SANITIZE_STRING));
-    $date = trim(filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING));
-    $time = trim(filter_input(INPUT_POST, 'timeSpent', FILTER_SANITIZE_NUMBER_INT));
-    $timeUnits = trim(filter_input(INPUT_POST, 'timeSpentUnits', FILTER_SANITIZE_STRING));
-    $learned = trim(filter_input(INPUT_POST, 'whatILearned', FILTER_SANITIZE_STRING));
-    $resources = trim(filter_input(INPUT_POST, 'ResourcesToRemember', FILTER_SANITIZE_STRING));
-    if (get_entries($title, $date, $time, $timeUnits, $learned, $resources, $id)) {
-        echo 'The entry has been successfully updated.';
-        header('refresh: 1; url = detail.php?id=' . $id . '');
-    } else {
-        echo 'Edit invalid. Please try again.';
-    }
+<?php include ("inc/header.php"); ?>
+
+        <section>
+            <div class="container">
+                <div class="entry-list">
+
+                    <?php
+                    if(isset($sortTag)){
+                        $entries = sort_by_tags($sortTag);
+                        foreach($entries AS $entry) { //Got help with this section from reviewing Allan and Grants projects
+                            
+                            echo "<article>
+                            <h2><a href=\"detail.php?id=". $entry['entry_id'] . "\">" .$entry['title']. "</a></h2>
+                            <time datetime=\"" . $entry['date'] . "\">" . date('F, d, Y', strtotime($entry['date'])) . "</time>";
+                            
+                            $tags = get_tags_by_entry_id($entry['entry_id']);
+                            if($tags == true){
+                                echo "<p>";
+                                $tags = array_column($tags, "tags");
+                                foreach($tags as $tag){
+                                    echo "<a class='taglink' href=index.php?tag=".$tag. ">#" . $tag . "</a> ";
+                                }
+                                echo "</p>";
+                            }
+                            
+                             echo "</article>";
     
-}
-include 'inc/header.php'; ?>
-    <section>
-      <div class="container">
-        <div class="edit-entry">
-          <h2>New Entry</h2>
-          <form method="post">
-            <label for="title">Title</label>
-            <input id="title" type="text" name="title" value="<?php echo $item['title']; ?>"><br>
-            <label for="date">Date</label>
-            <input id="date" type="date" name="date" value="<?php echo $item['date']; ?>"><br>
-            <label for="time-spent">Time Spent</label>
-            <input id="time-spent" type="number" name="timeSpent" value="<?php echo $item['time_spent']; ?>">
-            <select name="timeSpentUnits" required>
-              <option value="hour(s)" <?php if ($item['time_units'] == 'hour(s)') { echo 'selected'; } ?>>hour(s)</option>
-              <option value="minute(s)" <?php if ($item['time_units'] == 'minute(s)') { echo 'selected'; } ?>>minute(s)</option>
-            </select>
-            <label for="what-i-learned">What I Learned</label>
-            <textarea id="what-i-learned" rows="5" name="whatILearned"><?php echo $item['learned']; ?></textarea>
-            <label for="resources-to-remember">Resources to Remember (separate with commas)</label>
-            <textarea id="resources-to-remember" rows="5" name="ResourcesToRemember"><?php echo $item['resources']; ?></textarea>
-            <input type="hidden" name="id" value="<?php echo $id; ?>">
-            <input type="submit" value="Submit Entry" class="button">
-            <a href="index.php" class="button button-secondary">Cancel</a>
-          </form>
-        </div>
-      </div>
-    </section>
-<?php include 'inc/footer.php'; ?>
+                        }
+                    } else {
+                        $entries = get_entry();
+                        foreach ($entries as $entry) {
+                            echo '<article>
+                        <h2><a href="detail.php?id='.$entry['id'].'">'.$entry['title'].'</a></h2>
+                        <time datetime="'.$entry['date'].'">'.date('F, d, Y', strtotime($entry['date'])).'</time>';
+                            
+                                
+                                }
+                                echo '</p>';
+                            }
+                            echo '</article>';
+                                           
+                    ?>
+
+                </div>
+            </div>
+        </section>
+
+<?php include ("inc/footer.php"); ?>

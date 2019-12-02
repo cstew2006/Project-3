@@ -1,36 +1,57 @@
-<?php
-require 'inc/functions.php';
-include 'inc/header.php';
-$id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
-$selected=get_entry($id);
+<?php 
+include ("inc/header.php"); 
+
+if ('GET' == $_SERVER['REQUEST_METHOD']) {
+    if (isset($_GET['id'])) {
+        $entryId = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+    } else {
+        header('location: index.php');
+    }
+}
+$thisEntry = get_entry_with_id($entryId);
 ?>
-<!DOCTYPE html>
-<html>
 
         <section>
             <div class="container">
                 <div class="entry-list single">
                     <article>
-                        <h2><?php echo $selected['title']; //The WORST day I’ve ever had?></h2>
-                        <time datetime="<?php echo $selected['date'];?>"><?php echo $selected['date'];?></time>
+                        <h1><?php echo $thisEntry['title']; ?></h1>
+                        <time datetime="<?php echo $thisEntry['date']; ?>"><?php echo date('F, d, Y', strtotime($thisEntry['date'])); ?></time>
                         <div class="entry">
                             <h3>Time Spent: </h3>
-                            <p><?php echo $selected['time_spent'];//12 Hours?></p>
+                            <p><?php echo $thisEntry['time_spent']; ?></p>
                         </div>
                         <div class="entry">
                             <h3>What I Learned:</h3>
-                            <p><?php echo $selected<'learned'?></p>
+                            <p><?php echo $thisEntry['learned']; ?></p>
+                            
                         </div>
-                        <div class="entry">
+                        <?php
+                            if($thisEntry['resources'] != NULL) { ?>
+                             <div class="entry">
+                           
                             <h3>Resources to Remember:</h3>
-                            <p><?php echo $selected['resources'];?></p>
+                            <ul>
+                                <?php 
+                                    $resources = explode(",",$thisEntry['resources']);
+                                    foreach($resources as $resource){
+                                        echo "<li><a href=\"\">". $resource . "</a></li>";
+                                    }
+                             
+                                ?>
+                            </ul>
                         </div>
+                          <?php  } ?>
+
+                         
+                              </div>
+
                     </article>
                 </div>
             </div>
             <div class="edit">
-                <p><a href="edit.php?id=<?php echo $id; ?>">Edit Entry</a></p>
-        </div>
+                <p><a href="edit.php?id=<?php echo $entryId; ?>">Edit Entry</a></p>
+            </div>
         </section>
-      <?php include 'inc/footer.php'; ?>
-</html>
+
+<?php include ("inc/footer.php"); ?>

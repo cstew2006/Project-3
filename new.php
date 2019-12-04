@@ -13,7 +13,7 @@ session_start();
                     session_destroy();
                 }
                         echo "<h2>New Entry</h2>
-                        <form method='post' action='inc/db_add.php'>
+                        
                             <label for='title'> Title</label>";
                             if(isset($_SESSION['input']['title'])){
                                 echo "<input id='title' type='text' name='title' value='" . $_SESSION['input']['title'] . "'><br>";

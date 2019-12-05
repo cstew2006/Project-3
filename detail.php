@@ -1,57 +1,60 @@
-<?php 
-include ("inc/header.php"); 
+<?php
+require 'inc/functions.php';
 
-if ('GET' == $_SERVER['REQUEST_METHOD']) {
-    if (isset($_GET['id'])) {
-        $entryId = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
-    } else {
-        header('location: index.php');
-    }
+$pageTitle = 'Entry Details';
+$page = 'detail';
+$title = $timeSpent = $learned = $date = $name = $resources = '';
+
+if (isset($_GET['entry'])) {
+    list($id, $title, $date, $timeSpent, $learned, $resources, $name) = get_entry(filter_input(INPUT_GET, 'entry', FILTER_SANITIZE_NUMBER_INT));
 }
-$thisEntry = get_entry_with_id($entryId);
+
+include 'inc/header.php';
 ?>
 
-        <section>
-            <div class="container">
-                <div class="entry-list single">
-                    <article>
-                        <h1><?php echo $thisEntry['title']; ?></h1>
-                        <time datetime="<?php echo $thisEntry['date']; ?>"><?php echo date('F, d, Y', strtotime($thisEntry['date'])); ?></time>
-                        <div class="entry">
-                            <h3>Time Spent: </h3>
-                            <p><?php echo $thisEntry['time_spent']; ?></p>
-                        </div>
-                        <div class="entry">
-                            <h3>What I Learned:</h3>
-                            <p><?php echo $thisEntry['learned']; ?></p>
-                            
-                        </div>
-                        <?php
-                            if($thisEntry['resources'] != NULL) { ?>
-                             <div class="entry">
-                           
-                            <h3>Resources to Remember:</h3>
-                            <ul>
-                                <?php 
-                                    $resources = explode(",",$thisEntry['resources']);
-                                    foreach($resources as $resource){
-                                        echo "<li><a href=\"\">". $resource . "</a></li>";
-                                    }
-                             
-                                ?>
-                            </ul>
-                        </div>
-                          <?php  } ?>
+<div class="entry-list single">
+    <article>
+        <h1><?php echo $title; ?></h1>
+        <time datetime="<?php echo $date; ?>"><?php echo date_format(date_create($date), 'F j, Y'); ?></time>
+        <div class="entry">
+            <h3>Time Spent: </h3>
+            <p><?php echo $timeSpent; ?></p>
+        </div>
+        <div class="entry">
+            <h3>What I Learned:</h3>
+            <p><?php echo $learned; ?></p>
+        </div>
+        <?php
+        if ($resources != null) {
+            echo '<div class="entry">';
+            echo '<h3>Resources to Remember:</h3>';
+            echo '<ul>';
+            echo "<li><a href=''>$resources</a></li>";
+            echo '</ul>';
+            echo '</div>';
+        }
+        
+        if ($name != null) { 
+            $multiTagNames = explode(' ', $name);
+            if (count($multiTagNames) > 1) {
+                echo '<div class="entry">';
+                echo '<h3>Tags:</h3>';
+                foreach ($multiTagNames as $nameTag {
+                    echo '<p><a href="tags.php?name=' . $nameTag . '">' . $nameTag . '</a></p>';
+                }
+                echo '</div>';
+            } else {
+                echo '<div class="entry">';
+                echo '<h3>Tags:</h3>';
+                echo '<p><a href="tags.php?name=' . $multiTagNames[0] . '">' . $multiTagNames[0] . '</a></p>';
+                echo '</div>';
+            }
+        }
+        ?>
+    </article>
+</div>
+</div>
+<div class="edit">
+<p><a href="edit.php?entry=<?php echo $id; ?>">Edit Entry</a></p>
 
-                         
-                              </div>
-
-                    </article>
-                </div>
-            </div>
-            <div class="edit">
-                <p><a href="edit.php?id=<?php echo $entryId; ?>">Edit Entry</a></p>
-            </div>
-        </section>
-
-<?php include ("inc/footer.php"); ?>
+<?php include 'inc/footer.php' ?>

@@ -1,48 +1,52 @@
-<?php include ("inc/header.php"); ?>
+<?php
+require 'inc/functions.php';
 
-        <section>
-            <div class="container">
-                <div class="entry-list">
+$pageTitle = 'My Journal';
+$page = null;
 
-                    <?php
-                    if(isset($sortTag)){
-                        $entries = sort_by_tags($sortTag);
-                        foreach($entries AS $entry) { //Got help with this section from reviewing Allan and Grants projects
-                            
-                            echo "<article>
-                            <h2><a href=\"detail.php?id=". $entry['entry_id'] . "\">" .$entry['title']. "</a></h2>
-                            <time datetime=\"" . $entry['date'] . "\">" . date('F, d, Y', strtotime($entry['date'])) . "</time>";
-                            
-                            $tags = get_tags_by_entry_id($entry['entry_id']);
-                            if($tags == true){
-                                echo "<p>";
-                                $tags = array_column($tags, "tags");
-                                foreach($tags as $tag){
-                                    echo "<a class='taglink' href=index.php?tag=".$tag. ">#" . $tag . "</a> ";
-                                }
-                                echo "</p>";
-                            }
-                            
-                             echo "</article>";
-    
-                        }
-                    } else {
-                        $entries = get_entry();
-                        foreach ($entries as $entry) {
-                            echo '<article>
-                        <h2><a href="detail.php?id='.$entry['id'].'">'.$entry['title'].'</a></h2>
-                        <time datetime="'.$entry['date'].'">'.date('F, d, Y', strtotime($entry['date'])).'</time>';
-                            
-                                
-                                }
-                                echo '</p>';
-                            }
-                            echo '</article>';
-                                           
-                    ?>
+if (isset($_POST['delete'])) {
+    if (delete_entry(filter_input(INPUT_POST, 'delete', FILTER_SANITIZE_NUMBER_INT))) {
+        header('location: index.php?msg=Entry+Deleted');
+        exit;
+    } else {
+        header('location: index.php?msg=Unable+to+Delete+Entry');
+        exit;
+    }
+}
+if (isset($_GET['msg'])) {
+    $error_message = trim(filter_input(INPUT_GET, 'msg', FILTER_SANITIZE_STRING));
+}
 
-                </div>
-            </div>
-        </section>
+include 'inc/header.php';
+?>
 
-<?php include ("inc/footer.php"); ?>
+
+
+<div class="entry-list">
+    <?php
+    if (isset($error_message)) {
+        echo "<p class='message'>$error_message</p>";
+    }
+
+    foreach (get_list_entries() as $entry) {
+        echo '<article>';
+        echo '<h2><a href="detail.php?entry=' . $entry['id'] . '">' . $entry['title'] . '</a></h2>';
+        echo '<time datetime="' . $entry['date'] . '">' . date_format(date_create($entry['date']), 'F j, Y') . '</time>';
+        $plethoraTagNames = explode(' ', $entry['name']);
+        if (count($plethoraTagNames) > 1) {
+            foreach ($plethoraTagNames as $nameTag) {
+                echo '<p><a href="tags.php?name=' . $nameTag . '">' . $nameTag . '</a></p>';
+            }
+        } else {
+            echo '<p><a href="tags.php?name=' . $plethoraTagNames[0] . '">' . $plethoraTagNames[0] . '</a></p>';
+        }
+        echo "<form method='POST' action='index.php' onsubmit=\"return confirm('Are you sure you want to delete this entry?'); \">";
+        echo '<input type="hidden" name="delete" value="' . $entry['id'] . '">';
+        echo '<input type="submit" class="button--delete" value="Delete">';
+        echo '</form>';
+        echo '</article>';
+    }
+    ?>
+</div>
+
+<?php include 'inc/footer.php'; ?>

@@ -67,7 +67,7 @@ include 'inc/header.php';
         <label for="tags">Tags</label>
         
             <?php
-            foreach (get_tags() as $tag) {
+            foreach (pullS_tags() as $tag) {
                 echo "<option value='$tag'";
                 if (isset($_POST['tags']) && in_array($tag, $_POST['tags'])) {
                     echo ' selected';

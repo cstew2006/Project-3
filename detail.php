@@ -39,7 +39,7 @@ include 'inc/header.php';
             if (count($multiTagNames) > 1) {
                 echo '<div class="entry">';
                 echo '<h3>Tags:</h3>';
-                foreach ($multiTagNames as $nameTag {
+                foreach ($multiTagNames as $nameTag) {
                     echo '<p><a href="tags.php?name=' . $nameTag . '">' . $nameTag . '</a></p>';
                 }
                 echo '</div>';

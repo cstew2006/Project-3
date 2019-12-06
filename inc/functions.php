@@ -7,7 +7,7 @@ function get_list_entries()
 
     $sql = "SELECT  entries.id, entries.title, entries.date, GROUP_CONCAT(tags.name, ' ') AS name FROM entries
         LEFT OUTER JOIN the_link ON entries.id = the_link.entry_id 
-        LEFT OUTER JOIN tags ON the_link.tags_id = tags.id
+        LEFT OUTER JOIN tags ON the_link.id_tags = tags.id
         GROUP BY entries.id ORDER BY date DESC";
 
     try {
@@ -99,7 +99,7 @@ function get_entry($id)
     $sql = "SELECT entries.id, entries.title, entries.date, entries.time_spent, entries.learned, entries.resources, GROUP_CONCAT(tags.name, ' ') AS name
         FROM entries 
         LEFT OUTER JOIN the_link ON entries.id = the_link.entry_id 
-        LEFT OUTER JOIN tags ON id_link_tags = id_tags
+        LEFT OUTER JOIN tags ON the_link.id_tags = id_tags
         WHERE entries.id = ?
         GROUP BY entries.id ORDER BY date DESC";
 
@@ -209,7 +209,7 @@ function get_part_tag($name)
     $sql = 'SELECT entries.id, entries.title, entries.date, tags.name
         FROM entries 
         LEFT OUTER JOIN the_link ON entries.id = the_link.entry_id 
-        LEFT OUTER JOIN tags ON id_link_tags = id.tags
+        LEFT OUTER JOIN tags ON the_link.id_tags = id.tags
         WHERE tags.name = ?
         ORDER BY date DESC';
 

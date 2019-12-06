@@ -58,7 +58,7 @@ function add_entry($title, $date, $timeSpent, $learned, $resources = null, $tags
 
         foreach ($tags as $tag) {
 
-            if (isset($tag) && (in_array($tag, get_tags())) == false) {
+            if (isset($tag) && (in_array($tag, pullS_tags())) == false) {
                 $sql = 'INSERT INTO tags (name) VALUES (?)';
                 $results = $db->prepare($sql);
                 $results->bindValue(1, $tag, PDO::PARAM_STR);
@@ -125,7 +125,7 @@ function edit_entry($id, $title, $date, $timeSpent, $learned, $resources = null,
 
         $db->beginTransaction();
 
-        $sql = 'DELETE FROM a_link WHERE entry_id = ?';
+        $sql = 'DELETE FROM the_link WHERE entry_id = ?';
         $results = $db->prepare($sql);
         $results->bindValue(1, $id, PDO::PARAM_INT);
         $results->execute();
@@ -142,14 +142,14 @@ function edit_entry($id, $title, $date, $timeSpent, $learned, $resources = null,
 
         foreach ($tags as $tag) {
 
-            if (isset($tag) && (in_array($tag, get_tags())) == false) {
+            if (isset($tag) && (in_array($tag, pullS_tags())) == false) {
                 $sql = 'INSERT INTO tags (name) VALUES (?)';
                 $results = $db->prepare($sql);
                 $results->bindValue(1, $tag, PDO::PARAM_STR);
                 $results->execute();
                 $tags_id = $db->lastInsertId();
 
-                $sql = "INSERT INTO a_link (entry_id, id_tags) VALUES ($id, $id_tags)";
+                $sql = "INSERT INTO the_link (entry_id, id_tags) VALUES ($id, $id_tags)";
                 $db->query($sql);
             } elseif (isset($tag)) {
                 $sql = 'SELECT id FROM tags WHERE name = ?';
@@ -159,7 +159,7 @@ function edit_entry($id, $title, $date, $timeSpent, $learned, $resources = null,
                 $tags_id = $results->fetch();
                 $tags_id = $tags_id[0];
 
-                $sql = "INSERT INTO a_link (entry_id, id_tags) VALUES ($id, $id_tags)";
+                $sql = "INSERT INTO the_link (entry_id, id_tags) VALUES ($id, $id_tags)";
                 $db->query($sql);
             }
         }
@@ -187,7 +187,7 @@ function delete_entry($id) {
         $results->bindValue(1, $id, PDO::PARAM_INT);
         $results->execute();
 
-        $sql = 'DELETE FROM a_link WHERE entry_id = ?';
+        $sql = 'DELETE FROM the_link WHERE entry_id = ?';
         $results = $db->prepare($sql);
         $results->bindValue(1, $id, PDO::PARAM_INT);
         $results->execute();
@@ -209,7 +209,7 @@ function get_part_tag($name)
     $sql = 'SELECT entries.id, entries.title, entries.date, tags.name
         FROM entries 
         LEFT OUTER JOIN the_link ON entries.id = the_link.entry_id 
-        LEFT OUTER JOIN tags ON the_link.id_tags = id.tags
+        LEFT OUTER JOIN tags ON the_link.id_tags = tags.id
         WHERE tags.name = ?
         ORDER BY date DESC';
 
